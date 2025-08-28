@@ -19,17 +19,14 @@
 
 \seealso{ \code{\link{releaseVariables}}, \code{\link{releaseViews}} }
 \examples{
-  library(parallel)
-  library(memshare)
-  cluster = makeCluster(1)
+  cluster = parallel::makeCluster(1)
   
   namespace = "namespace"
   mat = matrix(0,5,5)
   registerVariables(namespace, list(mat=mat))
   
-  clusterEvalQ(cluster, {
-    library(memshare)
-    view = retrieveViews("namespace", c("mat"))
+  parallel::clusterEvalQ(cluster, {
+    view = memshare::retrieveViews("namespace", c("mat"))
   })
   \dontrun{
   # At this point each worker holds a view of mat

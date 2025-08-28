@@ -34,9 +34,9 @@
   }
   namespace = "my_namespace_rel"
   memshare::registerVariables(namespace, list(NumMatrix=NumMatrix, yvec=yvec))
-	\dontrun{
+  \dontrun{
   # Perform your shared calculations here
-	}
+  }
   memshare::releaseVariables(namespace, c("NumMatrix", "yvec"))
 }
 \concept{ shared memory }
