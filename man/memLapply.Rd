@@ -32,7 +32,6 @@
   list_length = 1000
   matrix_dim = 100
 
-  # Create the list of random matrices
   l <- lapply(
       1:list_length,
       function(i) matrix(rnorm(matrix_dim * matrix_dim),

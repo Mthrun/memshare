@@ -22,8 +22,10 @@
 
 \seealso{ \code{\link{releaseVariables}}, \code{\link{releaseViews}}, \code{\link{registerVariables}} }
 \examples{
+  \dontrun{
   # MASTER SESSION:
   # allocate data
+  }
   n = 1000
   m = 100
 
@@ -31,17 +33,21 @@
 
   namespace = "my_namespace_meta"
   memshare::registerVariables(namespace, list(mat=mat))
-
+  \dontrun{
   # WORKER SESSION:
   # retrieve metadata of the variable
+  }
   res = memshare::retrieveMetadata(namespace, "mat")
+  \dontrun{
   # res$type = "matrix"
   # res$nrow = 1000
   # res$ncol = 100
+  }
   releaseViews(namespace, c("mat"))
-  
+  \dontrun{
   # MASTER SESSION:
   # free memory
+  }
   memshare::releaseVariables(namespace, c("mat"))
 }
 \concept{ shared memory }

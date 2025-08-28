@@ -25,8 +25,10 @@
 
 \seealso{ \code{\link{releaseVariables}}, \code{\link{registerVariables}}, \code{\link{releaseViews}} }
 \examples{
+  \dontrun{ 
   # MASTER SESSION:
   # init some data and make shared
+  }
   n = 1000
   m = 100
 
@@ -35,10 +37,12 @@
 
   namespace = "my_namespace_retr_view"
   memshare::registerVariables(namespace, list(mat=mat, y=y))
-
+  \dontrun{
   # WORKER SESSION
   # retrieve the shared data and work with it
+  }
   res = memshare::retrieveViews(namespace, c("mat", "y"))
+  \dontrun{
   # res is a list of the format:
   # list(mat=matrix_altrep, y=vector_altrep),
   # altrep-variables can be used
@@ -49,11 +53,13 @@
 
   # important: Free view before resuming
   # to master session to release the variables!
+  }
   memshare::releaseViews(namespace, c("mat", "y"))
   
-  
+  \dontrun{
   # MASTER SESSION
   # After all view handles have been free'd, release the variable
+  }
   memshare::releaseVariables(namespace, c("mat", "y"))
 }
 \concept{ shared memory }

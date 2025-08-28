@@ -20,16 +20,29 @@ The string of each element of the output list has the format <namespace name>.<v
 
 \seealso{ \code{\link{retrieveViews}}, \code{\link{releaseViews}} }
 \examples{
-  viewList()
-  # = list()
+  \dontrun{
+  # MASTER SESSION:
+  }
+  mat = matrix(0,5,5)
+  registerVariables("namespace_viewList", list(mat=mat))
 
-  #retrieveViews("namespace_viewL", c("my_shared_variable"))
-  #viewList()
-  # = list("my_shared_variable")
+  \dontrun{
+  # WORKER SESSION:
+  }
+  viewList() # an empty list to begin with (no views retrieved)
 
-  #releaseViews("namespace", c("my_shared_variable"))
-  #viewList()
-  # = list()
+  matref = retrieveViews("namespace_viewList", c("mat"))
+  viewList() 
+  \dontrun{# now equals c("namespace_viewList.mat")}
+
+  releaseViews("namespace_viewList", c("mat"))
+  viewList() 
+  \dontrun{
+  # an empty list again
+  
+  # MASTER SESSION:
+  }
+  releaseVariables("namespace_viewList", c("mat"))
 }
 
 \note{

@@ -44,5 +44,7 @@ Maintainer: \packageMaintainer{memshare}
 	},VARS = list(y=y),MAX.CORES=1, #for testing purposes only single thread
 	NAMESPACE="namespaceID")
 	unlist(res)
+	\dontrun{
 	#usually MAX.CORES>1 for application
+	}
 }

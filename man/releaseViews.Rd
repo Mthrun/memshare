@@ -10,16 +10,21 @@
   releaseViews(namespace, variableNames)
 }
 \arguments{
-  \item{namespace}{ The identifier of the shared memory context. }
+  \item{namespace}{ string of the identifier of the shared memory context. }
   \item{variableNames}{ A character vector of variable names to delete. }
+}
+\value{
+  No return value, called for deallocation of views.
 }
 
 \author{ Julian Maerte }
 
 \seealso{ \code{\link{retrieveViews}}, \code{\link{registerVariables}} }
 \examples{
+  \dontrun{
   # MASTER SESSION:
   # allocate data
+  }
   n = 1000
   m = 100
 
@@ -28,14 +33,18 @@
 
   namespace = "my_namespace_rel_view"
   memshare::registerVariables(namespace, list(mat=mat, y=y))
-  
+  \dontrun{
   # WORKER SESSION:
+  }
   res = retrieveViews(namespace, c("mat", "y"))
+  \dontrun{
   # Perform your shared calculations here
+  }
   releaseViews(namespace, c("mat", "y"))
-
+  \dontrun{
   # MASTER SESSION:
   # free memory
+  }
   memshare::releaseVariables(namespace, c("mat", "y"))
 }
 \concept{ shared memory }

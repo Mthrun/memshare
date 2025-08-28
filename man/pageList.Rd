@@ -22,16 +22,20 @@ The string of each element of the output list has the format environment, backsl
 \seealso{ \code{\link{registerVariables}}, \code{\link{releaseVariables}} }
 \examples{
   pageList()
+  \dontrun{
   # = list()
-
+  }
   mat = matrix(0,5,5)
   registerVariables("namespace_pageL", list(mat=mat))
   pageList()
+  \dontrun{
   # = list("mat")
-
+  }
   releaseVariables("namespace_pageL", c("mat"))
   pageList()
+  \dontrun{
   # = list()
+  }
 }
 \concept{ shared memory }
 \keyword{ multithreading }

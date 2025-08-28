@@ -8,8 +8,11 @@
   memshare_gc(namespace, cluster)
 }
 \arguments{
-  \item{namespace}{ The identifier of the shared memory context. }
+   \item{namespace}{ string of the identifier of the shared memory context. }
   \item{cluster}{ A worker context (parallel cluster) that holds views or pages in the same memory context as the master. NULL by default; then only the master session gets its handles removed. }
+}
+\value{
+  No return value, called deallocation of memory pages and views in a joint memory context.
 }
 
 \author{ Julian Maerte }
@@ -28,13 +31,16 @@
     library(memshare)
     view = retrieveViews("namespace", c("mat"))
   })
+  \dontrun{
   # At this point each worker holds a view of mat
-  
+  }
   memshare_gc("namespace", cluster)
+  \dontrun{
   # Every workers viewership handle gets destroyed, master sessions page handle
   # gets destroyed.
   # As no handles are left open, the memory is free'd.
-  stopCluster(cluster)
+  }
+  parallel::stopCluster(cluster)
 }
 \concept{ shared memory }
 \keyword{ multithreading }

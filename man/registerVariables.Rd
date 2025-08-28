@@ -11,6 +11,9 @@
   \item{namespace}{ string of the identifier of the shared memory context. }
   \item{variableList}{ A named list of variables to register. Currently supported are matrices and vectors. }
 }
+\value{
+  No return value, called for allocation of memory pages.
+}
 
 \author{ Julian Maerte }
 

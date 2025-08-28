@@ -57,4 +57,6 @@ memshare_gc = function(namespace, cluster = NULL) {
       }
     })
   }
+  
+  return(invisible(NULL))
 }
