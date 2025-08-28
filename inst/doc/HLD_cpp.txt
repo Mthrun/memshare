@@ -1,0 +1,25 @@
+memshare C++ Doku:
+
+
+Grundlagen:
+	1. "Pages" sind Variablen die von der aktuellen Compilation-Unit des Codes geowned werden (z.B. R-Session oder Terminal das die dll geladen hat).
+	2. "Views" sind Referenzen auf Variablen die von einer anderen (oder der eigenen) Compilation-Unit geowned werden.
+	3. Pages sind in Windows per MapViewOfFile und auf Unix per shm+mmap gecoded.
+	4. Views sind immer ALTREP wrapper für die pointer zum shared memory chunk.
+
+Explizites:
+	* altrep.h/cpp: Definiert die Subroutinen für die verschiedenen ALTREP Objekte (double matrix, double vector oder liste dieser). ALTREPs sind R objekte die R-nativ aussehen und sich so verhalten, die aber im Backend auf externen Speicher verweisen können.
+
+	* c_mutualinfo.h/cpp: Definiert mutual info routine anhand einer joint-table aus R.
+
+	* init.cpp: Main-File; hier werden die exportierten Funktionen der dll gesetzt sowie die verfügbaren ALTREPs definiert. Wir nutzen RcppExport nicht (Plattform-Probleme)! Stattdessen hat jede exportierte Funktionen eine 'extern "C"' deklarierte Wrapper funktion die SEXP Objekte entsprechend interpretiert und dann die C funktion darauf anwendet (vgl. c_mutualinfo, register, retrieve).
+
+	* memory_page.h/cpp: Hier passiert das memory handling (d.h. das initialisieren und holen von page/view handles abhängig vom OS). In Windows wird ein shared memory handle im Local space (User-weit) angefragt per MapViewOfFile; für Unix fragen wir eine solche page per shm_open an und holen einen pointer per mmap.
+
+	* metadata.h/cpp: Hierin befindet sich das Strategy-Pattern für die metadata structs der verschiedenen ALTREPs. Strategy-Pattern deshalb, weil die explizite Gestalt des metadata structs davon abhängt ob es matrix, vektor oder listen metadaten sind. Diese werden per union injected.
+
+	* register.h/cpp: Enthält die Funktionen bezüglich pages. D.h. hierin befindet sich der Code den man braucht um Variablen innerhalb des eigenen Scopes zu managen (Ownership).
+
+	* retrieve.h/cpp: Enthält die Funktionen bezüglich views. D.h. hierin befindet sich der Code den man bracuht um Variablen außerhalb des eigenen Scopes zu managen (Viewership).
+
+	* shared_memory.h/cpp: Ein weiterer abstraction-layer auf die memory_page.h/cpp; SharedData pointed zeitgleich auf die metadaten und die Daten selbst. Das soll es einfach erleichtern über die Daten zu iterieren, da wir für ein ALTREP im Backend nun sowohl die Größe (Anzahl der Doubles/nrow, ncol/...) als auch den tatsächlichen Data pointer haben.
