@@ -27,7 +27,7 @@ eps=.Machine$double.eps*1000, useMPMI=FALSE,na.rm=FALSE)
   \item{isXDiscrete}{Boolean defining whether or not the first numeric vector resembles a continuous or discrete measurement}
   \item{isYDiscrete}{Boolean defining whether or not the second numeric vector resembles a continuous or discrete measurement}
   \item{eps}{Scalar, The threshold for which the mutual info summand should be ignored (the limit of the summand for x -> 0 is 0 but the logarithm will be -inf...)}
-  \item{useMPMI}{Boolean defining whether or not to use the package MPMI for the calculation (will be used as a baseline)}  
+  \item{useMPMI}{Boolean defining whether or not to use the package \pkg{mpmi} for the calculation (will be used as a baseline)}  
   \item{na.rm}{Boolean defining whether or not to use complete obeservations only}
 }
 \value{

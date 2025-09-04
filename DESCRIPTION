@@ -1,10 +1,10 @@
 Package: memshare
 Type: Package
-Title: Shared Memory in R
+Title: Shared Memory Multithreading
 Version: 1.0.1
 Date: 2025-08-28
 Authors@R: c(person("Julian" ,"Maerte",email= "j.maerte@iap-gmbh.de",role=c("aut","ctr"), comment = c(ORCID = "0000-0001-5451-1023")),person("Romain" ,"Francois",role=c("ctb")), person("Michael", "Thrun", email= "m.thrun@gmx.net",role=c("aut","ths","rev","cph","cre"), comment = c(ORCID = "0000-0001-9542-5543")))
-Description: This project extends R with a mechanism for efficient parallel data access by utilizing C++ shared memory. Large data objects can be accessed and manipulated directly from R without redundant copying, providing both speed and memory efficiency.
+Description: This project extends 'R' with a mechanism for efficient parallel data access by utilizing 'C++' shared memory. Large data objects can be accessed and manipulated directly from 'R' without redundant copying, providing both speed and memory efficiency.
 Maintainer: Michael Thrun <m.thrun@gmx.net>
 LazyLoad: yes
 LinkingTo: Rcpp 

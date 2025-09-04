@@ -1,13 +1,9 @@
 \name{memApply}
 \alias{memApply}
-\title{ Analog of \code{\link[parallel]{parApply}} function for a shared memory context. Runs a worker pool on the exact same memory (shared memory context, see \code{\link{registerVariables}}). }
+\title{ Analog of \code{\link[parallel]{parApply}} function for a shared memory context. }
 \description{
-  \code{memApply} mirrors \code{\link[parallel]{parApply}} in the shared memory setting. Given a shared memory space \code{namespace} with a target matrix \code{X} and some shared variables \code{VARS} either as variables or as names of their registered variables,
-  \code{memApply} allows you to apply a function \code{FUN} row- or columnwise (depending on \code{MARGIN}) over the target matrix.
-  Since the memory is shared only the names of variables have to be copied to each worker thread in \code{CLUSTER} (a \code{\link[parallel]{makeCluster}} multithreading cluster) resulting in sharing of arbitrarily large matrices (as long as the fit in RAM once) along a \code{parallel} cluster while only copying a couple of bytes per cluster.
-
-  It is recommended not to change the values of \code{v} inside \code{FUN}, however this will only lead to some copying of the column whenever it is worked upon; the shared memory thus will not be corrupted even if you write to col. Also the copying only ever happens for one column at a time leading to much lower memory consumption than parallel even in this case.
-}
+  \code{memApply} mirrors \code{\link[parallel]{parApply}} in the shared memory setting given a shared memory space \code{namespace} with a target matrix \code{X} and some shared variables \code{VARS} either as variables or as names of their registered variables.
+ }
 \usage{
   memApply(X, MARGIN, FUN, 
   
@@ -25,10 +21,13 @@
 \value{
   \item{result}{A list of the results of func(row,...) of size n or func(col, ...) of size d, depending on \code{MARGIN}, for every row/col of \code{X}.}
 }
-
 \details{
-The numerical matrix X and the Vars havee to be objects of base type "\code{double}".
+ \code{memApply} runs a worker pool on the exact same memory (for shared memory context, see \code{\link{registerVariables}}), and allows you to apply a function \code{FUN} row- or columnwise (depending on \code{MARGIN}) over the target matrix.
+  Since the memory is shared only the names of variables have to be copied to each worker thread in \code{CLUSTER} (a \code{\link[parallel]{makeCluster}} multithreading cluster) resulting in sharing of arbitrarily large matrices (as long as the fit in RAM once) along a \pkg{parallel} cluster while only copying a couple of bytes per cluster.
+
+ The numerical matrix X and the Vars havee to be objects of base type '\code{double}'.
 }
+
 \author{ Julian Maerte }
 
 \seealso{ \code{\link[parallel]{parApply}} }

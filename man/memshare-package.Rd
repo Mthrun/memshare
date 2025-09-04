@@ -18,9 +18,9 @@ If the user detaches the package, all handels are destroyed, meaning that all va
 
 The two basic definitions are:
 
-1. “\code{Pages}” are variables owned by the current compilation unit of the code (e.g., R session or terminal that loaded the DLL). The pages are coded in Windows via MapViewOfFile and on Unix via shm+mmap.
+1. “\code{Pages}” are variables owned by the current compilation unit of the code (e.g., 'R' session or terminal that loaded the DLL). The pages are coded in Windows via 'MapViewOfFile' and on Unix via 'shm'+'mmap'.
 		
-2. “\code{Views}” are references to variables owned by another (or their own) compilation unit. The views are always ALTREP wrappers for the pointers to the shared memory chunk.  
+2. “\code{Views}” are references to variables owned by another (or their own) compilation unit. The views are always 'ALTREP' wrappers for the pointers to the shared memory chunk.  
 		
 3. "\code{namespace}" are character of length 1 called here strings, that define the identifier of the shared memory context allowing the initialize shared variables.
 }

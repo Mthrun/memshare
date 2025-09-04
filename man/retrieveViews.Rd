@@ -1,11 +1,11 @@
 \name{retrieveViews}
 \alias{retrieveViews}
-\title{ Function to obtain an \code{ALTREP} representation of variables from a shared memory space. }
+\title{ Function to obtain an '\code{ALTREP}' representation of variables from a shared memory space. }
 \description{
-  Given a namespace identifier (identifies the shared memory space to register to), this function constructs mocked matrices/vectors (depending on the variable type) pointing to C++ shared memory instead of R-internal memory state.
-  The mockup is constructed as an \code{ALTREP} object, which is an Rcpp wrapper around C++ raw memory. R thinks of these objects as common matrices or vectors.
+  Given a namespace identifier (identifies the shared memory space to register to), this function constructs mocked matrices/vectors (depending on the variable type) pointing to 'C++' shared memory instead of 'R'-internal memory state.
+  The mockup is constructed as an '\code{ALTREP}' object, which is an \pkg{Rcpp} wrapper around 'C++' raw memory. 'R' thinks of these objects as common matrices or vectors.
 
-  The variables content can be modified, resulting in modification of shared memory. Thus when not using wrapper functions like \code{\link{memApply}} or \code{\link{memLapply}} the user has to be cautious of the side-effects an R session working on shared memory has on other R sessions working on the same namespace.
+  The variables content can be modified, resulting in modification of shared memory. Thus when not using wrapper functions like \code{\link{memApply}} or \code{\link{memLapply}} the user has to be cautious of the side-effects an 'R' session working on shared memory has on other 'R' sessions working on the same namespace.
   
   NOTE: Having a view of a memory chunk introduces an internally tracked handle to the shared memory. Shared memory is not deleted until all handles are gone; before calling \code{\link{releaseVariables}} in the master session, you have to free all view-initialized handles via \code{\link{releaseViews}}!
 }

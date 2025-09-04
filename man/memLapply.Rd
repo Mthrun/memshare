@@ -1,17 +1,17 @@
 \name{memLapply}
 \alias{memLapply}
-\title{ Analog of \code{\link[parallel]{parLapply}} function for a shared memory context. Runs a worker pool on the exact same memory (shared memory context). }
+\title{ Analog of \code{\link[parallel]{parLapply}} function for a shared memory context. }
 \description{
-  \code{memLapply} mirrors \code{\link[parallel]{parLapply}} in the shared memory setting. Given a shared memory space \code{namespace} with a target list \code{X} and some shared variables \code{VARS} either as list of variables or as their names in the memory space,
-  \code{memLapply} allows you to apply a function \code{FUN} elementwise over the target list.
-  Since the memory is shared only the names have to be copied to each worker thread in \code{CLUSTER} (a \code{\link[parallel]{makeCluster}} multithreading cluster) resulting in sharing of arbitrarily large matrices (as long as the fit in RAM once) along a \code{parallel} cluster while only copying a couple of bytes per cluster.
-
-  It is recommended not to change the values of \code{el} inside \code{FUN}, however this will only lead to some copying of the column whenever it is worked upon; the shared memory thus will not be corrupted even if you write to col. Also the copying only ever happens for one column at a time leading to much lower memory consumption than parallel even in this case.
-}
+  \code{memLapply} mirrors \code{\link[parallel]{parLapply}} in the shared memory setting given a shared memory space \code{namespace} with a target list \code{X} and some shared variables \code{VARS} either as list of variables or as their names in the memory space,
+ }
 \usage{
   memLapply(X, FUN, 
   
   NAMESPACE = NULL, CLUSTER = NULL, VARS=NULL, MAX.CORES = NULL)
+}
+\details{
+  \code{memLapply} runs a worker pool on the exact same memory (shared memory context), and allows you to apply a function \code{FUN} elementwise over the target list.
+  Since the memory is shared only the names have to be copied to each worker thread in \code{CLUSTER} (a \code{\link[parallel]{makeCluster}} multithreading cluster) resulting in sharing of arbitrarily large matrices (as long as the fit in RAM once) along a \pkg{parallel} cluster while only copying a couple of bytes per cluster.
 }
 \arguments{
   \item{X}{ Either a 1:n list object or a the name of an already registered list object in \code{NAMESPACE}. }
