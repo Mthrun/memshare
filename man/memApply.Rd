@@ -36,9 +36,9 @@
 \seealso{ \code{\link[parallel]{parApply}} }
 \examples{
   library(parallel)
-  cl=makeCluster(1)
-  i=1
-  A1 <- matrix(as.double(1:10^(i+1)),10^i, 10^i)
+  cl = makeCluster(1)
+  i = 1
+  A1 = matrix(as.double(1:10^(i+1)),10^i, 10^i)
   
   res = memApply(X = A1, MARGIN = 2, FUN = function(x) {
     return(sd(x))

@@ -34,7 +34,7 @@
   list_length = 1000
   matrix_dim = 100
 
-  l <- lapply(
+  l = lapply(
       1:list_length,
       function(i) matrix(rnorm(matrix_dim * matrix_dim),
       nrow = matrix_dim, ncol = matrix_dim))

@@ -41,20 +41,20 @@ System requirements: R ≥ 4.0 and a C++17 compiler.
 
 # Quick start
 
-## Example: Parallel correlations with a matrix
+## Example 1: Parallel correlations with a matrix
 
 ```r
 library(memshare)
 library(parallel)
 
 set.seed(1)
-n <- 10000
-p <- 2000
+n = 10000
+p = 2000
 
-X <- matrix(rnorm(n * p), n, p)
-y <- rnorm(n)
+X = matrix(rnorm(n * p), n, p)
+y = rnorm(n)
 
-res <- memApply(
+res = memApply(
   X = X, MARGIN = 2,
   FUN = function(v, y) cor(v, y),
   VARS = list(y = y)
@@ -62,15 +62,38 @@ res <- memApply(
 str(res)
 ```
 
-Here res is a list of correlations, one per column, computed in parallel without copying X to each worker.
+## Example 2: List operations
+
+```r
+library(memshare)
+library(parallel)
+
+list_length = 1000
+matrix_dim = 100
+
+ListV = lapply(
+     1:list_length,
+     function(i) matrix(rnorm(matrix_dim * matrix_dim),
+     nrow = matrix_dim, ncol = matrix_dim))
+
+y = rnorm(matrix_dim)
+
+namespace = "my_namespace"
+res = memshare::memLapply(ListV, function(el, y) {
+   el %*% y
+}, NAMESPACE=namespace, VARS=list(y=y), MAX.CORES = 1)
+
+```
+
+Each element el of ListV is multiplied by y in parallel. The list resides once in shared memory.
 
 ## Concepts
 
-Pages: memory regions owned by the current R session that loaded the package.
+- Pages: memory regions owned by the current R session that loaded the package.
 
-Views: ALTREP wrappers exposing shared memory variables (read/write capable).
+- Views: ALTREP wrappers exposing shared memory variables (read/write capable).
 
-Namespaces: string identifiers defining a shared memory context across sessions.
+- Namespaces: string identifiers defining a shared memory context across sessions.
 
 When the package is detached, all handles and associated shared memory pages are released, unless another R process still holds references.
 
