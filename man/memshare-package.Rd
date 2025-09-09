@@ -33,18 +33,41 @@ Maintainer: \packageMaintainer{memshare}
 \keyword{ package }
 
 \examples{
-	x=rnorm(100)
-	y=runif(100)
-	Mat=cbind(x,x,x)
-	res = memApply(X = Mat, MARGIN = 2,
-	FUN = function(x,y) {
-    cc=memshare::mutualinfo(x,y,isYDiscrete = TRUE,
-                  na.rm = TRUE,useMPMI = FALSE)
-    return(cc)
-	},VARS = list(y=y),MAX.CORES=1, #for testing purposes only single thread
-	NAMESPACE="namespaceID")
-	unlist(res)
-	\dontrun{
+x=rnorm(100)
+y=runif(100)
+Mat=cbind(x,x,x)
+res = memApply(X = Mat, MARGIN = 2,
+FUN = function(x,y) {
+  cc=memshare::mutualinfo(x,y,isYDiscrete = TRUE,
+                      na.rm = TRUE,useMPMI = FALSE)
+  return(cc)
+},VARS = list(y=y),MAX.CORES=1, #for testing purposes only single thread
+NAMESPACE="namespaceID")
+unlist(res)
+\dontrun{
 	#usually MAX.CORES>1 for application
-	}
+	
+	#alternative usage with manual memory allocation:
+}
+Data = cbind(x, x, x)?m
+namespace = "my_namespace_reg_ex"
+memshare::registerVariables(namespace, list(Data = Data, y = y))
+res2 = memshare::memApply(
+  X = "Data",
+  MARGIN = 2,
+  FUN = function(x, y) {
+    cc = memshare::mutualinfo(x,
+                              y,
+                              isYDiscrete = TRUE,
+                              na.rm = TRUE,
+                              useMPMI = FALSE)
+    return(cc)
+  },
+  VARS = c("y"),
+  MAX.CORES = 1,
+  #for testing purposes only single thread
+  NAMESPACE = namespace
+)
+unlist(res2)
+memshare::releaseVariables(namespace, c("Data", "y"))
 }

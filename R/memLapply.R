@@ -42,7 +42,7 @@ memLapply = function(X, FUN, NAMESPACE = NULL, CLUSTER = NULL, VARS=NULL, MAX.CO
         if (length(X) > 1) {
             stop("memLapply: Target list has to be a single string when giving the target matrix externally!")
         }
-        if (namespaceSetByUser) {
+        if (!namespaceSetByUser) {
             stop("memLapply: When giving the target list by name the namespace field has to be set explicitly!")
         }
         listName = X
@@ -57,7 +57,7 @@ memLapply = function(X, FUN, NAMESPACE = NULL, CLUSTER = NULL, VARS=NULL, MAX.CO
     }
 
     if (is.character(VARS) && is.vector(VARS)) {
-        if (namespaceSetByUser) {
+        if (!namespaceSetByUser) {
             stop("memLapply: When giving variables by name the namespace field has to be set explicitly!")
         }
         sharedNames = VARS

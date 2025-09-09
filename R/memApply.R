@@ -59,8 +59,8 @@ memApply = function(X, MARGIN, FUN, NAMESPACE = NULL, CLUSTER=NULL, VARS=NULL, M
           if (length(X) > 1) {
             stop("memApply: Target matrix has to be a single string when giving the target matrix externally!")
           }
-          if (namespaceSetByUser) {
-            stop("memApply:When giving the target matrix by name the namespace field has to be set explicitly!")
+          if (!namespaceSetByUser) {
+            stop("memApply: When giving the target matrix by name the namespace field has to be set explicitly!")
           }
           matName = X
           #MT: control flag that omoits further checks, the have to be done in the init procedure elsewhere
@@ -94,11 +94,12 @@ memApply = function(X, MARGIN, FUN, NAMESPACE = NULL, CLUSTER=NULL, VARS=NULL, M
         } else {
           #MT: X is not character and somehow not numeric or not matrix
           #should not happen as as.matrix() oder mode(X) should faile earlier, fail save
-          stop("memApply: Unknown input format for parameter \"X\"!")
+          if(!isTRUE(CharCheck))
+            stop("memApply: Unknown input format for parameter \"X\"!")
         }#end if check X as matrix
         
         if (is.character(VARS) && is.vector(VARS)) {
-          if (namespaceSetByUser) {
+          if (!namespaceSetByUser) {
             stop("memApply: When giving variables by name the namespace field has to be set explicitly!")
           }
           sharedNames = VARS
