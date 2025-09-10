@@ -50,7 +50,7 @@ unlist(res)
 	#alternative usage with manual memory allocation:
 }
 Data = cbind(x, x, x)?m
-namespace = "my_namespace_reg_ex"
+namespace = "my_namespace_package"
 memshare::registerVariables(namespace, list(Data = Data, y = y))
 res2 = memshare::memApply(
   X = "Data",
