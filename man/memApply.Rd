@@ -42,7 +42,7 @@
   
   res = memApply(X = A1, MARGIN = 2, FUN = function(x) {
     return(sd(x))
-  }, CLUSTER=cl, NAMESPACE="namespace")
+  }, CLUSTER=cl, NAMESPACE="ns_apply")
   
   SD_vector=unlist(res)
 }

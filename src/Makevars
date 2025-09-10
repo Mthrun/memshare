@@ -1,8 +1,0 @@
-CXX_STD = CXX17
-#PKG_CXXFLAGS = -Wall -pedantic #non-portable
-
-## Use fully qualified paths for Rcpp flags
-R_SCRIPT = $(R_HOME)/bin/Rscript $(R_ARCH)
-
-PKG_CPPFLAGS = `$(R_SCRIPT) --vanilla -e "Rcpp:::CxxFlags()"`
-PKG_LIBS     = `$(R_SCRIPT) --vanilla -e "Rcpp:::LdFlags()"`

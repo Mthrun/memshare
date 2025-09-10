@@ -32,7 +32,7 @@
   # yvec os some other constant vector 
   # in which the function should not run
   }
-  namespace = "my_namespace_rel"
+  namespace = "ns_release"
   memshare::registerVariables(namespace, list(NumMatrix=NumMatrix, yvec=yvec))
   \dontrun{
   # Perform your shared calculations here

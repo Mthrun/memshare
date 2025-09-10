@@ -78,7 +78,7 @@ ListV = lapply(
 
 y = rnorm(matrix_dim)
 
-namespace = "my_namespace"
+namespace = "ID123"
 res = memshare::memLapply(ListV, function(el, y) {
    el %*% y
 }, NAMESPACE=namespace, VARS=list(y=y), MAX.CORES = 1)

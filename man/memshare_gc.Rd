@@ -21,17 +21,16 @@
 \examples{
   cluster = parallel::makeCluster(1)
   
-  namespace = "namespace"
   mat = matrix(0,5,5)
-  registerVariables(namespace, list(mat=mat))
+  registerVariables("ns", list(mat=mat))
   
   parallel::clusterEvalQ(cluster, {
-    view = memshare::retrieveViews("namespace", c("mat"))
+    view = memshare::retrieveViews("ns", c("mat"))
   })
   \dontrun{
   # At this point each worker holds a view of mat
   }
-  memshare_gc("namespace", cluster)
+  memshare_gc("ns", cluster)
   \dontrun{
   # Every workers viewership handle gets destroyed, master sessions page handle
   # gets destroyed.

@@ -26,12 +26,12 @@ The string of each element of the output list has the format environment, backsl
   # = list()
   }
   mat = matrix(0,5,5)
-  registerVariables("namespace_pageL", list(mat=mat))
+  registerVariables("ns_pageL", list(mat=mat))
   pageList()
   \dontrun{
   # = list("mat")
   }
-  releaseVariables("namespace_pageL", c("mat"))
+  releaseVariables("ns_pageL", c("mat"))
   pageList()
   \dontrun{
   # = list()

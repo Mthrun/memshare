@@ -24,25 +24,25 @@ The string of each element of the output list has the format <namespace name>.<v
   # MASTER SESSION:
   }
   mat = matrix(0,5,5)
-  registerVariables("namespace_viewList", list(mat=mat))
+  registerVariables("ns_viewL", list(mat=mat))
 
   \dontrun{
   # WORKER SESSION:
   }
   viewList() # an empty list to begin with (no views retrieved)
 
-  matref = retrieveViews("namespace_viewList", c("mat"))
+  matref = retrieveViews("ns_viewL", c("mat"))
   viewList() 
-  \dontrun{# now equals c("namespace_viewList.mat")}
+  \dontrun{# now equals c("ns_viewL.mat")}
 
-  releaseViews("namespace_viewList", c("mat"))
+  releaseViews("ns_viewL", c("mat"))
   viewList() 
   \dontrun{
   # an empty list again
   
   # MASTER SESSION:
   }
-  releaseVariables("namespace_viewList", c("mat"))
+  releaseVariables("ns_viewL", c("mat"))
 }
 
 \note{

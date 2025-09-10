@@ -35,7 +35,7 @@
   mat = matrix(rnorm(n * m), n, m) # target matrix
   y = rnorm(n) # some other constant vector in which the function should not run
 
-  namespace = "my_namespace_retr_view"
+  namespace = "ns_retrview"
   memshare::registerVariables(namespace, list(mat=mat, y=y))
   \dontrun{
   # WORKER SESSION

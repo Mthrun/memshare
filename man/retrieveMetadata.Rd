@@ -31,7 +31,7 @@
 
   mat = matrix(rnorm(n * m), n, m) # target matrix
 
-  namespace = "my_namespace_meta"
+  namespace = "ns_meta"
   memshare::registerVariables(namespace, list(mat=mat))
   \dontrun{
   # WORKER SESSION:

@@ -26,7 +26,7 @@
   TargetMat= matrix(rnorm(n * m), n, m) # target matrix
   x_vec = rnorm(n) # some other vector
 
-  namespace = "my_namespace_reg_ex"
+  namespace = "ns_register"
   registerVariables(namespace, list(TargetMat=TargetMat, x_vec=x_vec))
   memshare::releaseVariables(namespace, c("TargetMat", "x_vec"))
 }

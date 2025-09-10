@@ -10,7 +10,7 @@ LazyLoad: yes
 LinkingTo: Rcpp 
 Imports: Rcpp (>= 1.0.14), parallel
 Suggests: ScatterDensity (>= 0.1.1), DataVisualizations (>= 1.1.5), mpmi
-SystemRequirements: C++17, GNU make
+SystemRequirements: C++17
 Depends: R (>= 4.3.0)
 NeedsCompilation: yes
 License: GPL-3

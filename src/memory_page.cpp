@@ -37,6 +37,12 @@ void MemoryPage::alloc(const std::string& name, size_t byteSize) {
     }
     
 #else
+    #ifdef __APPLE__
+        if (name.size() > 32) { // including leading '/'
+            throw std::runtime_error("On MacOS shared variable allocations are only allowed for UIDs with a length < 32 characters; " + name + " exceeds this! Choose a shorter namespace and variable name!");
+        }
+    #endif
+
     // for ubuntu open a new shm and mmap it.
     fd_ = shm_open(name.c_str(), O_CREAT | O_EXCL | O_RDWR, 0666);
     if (fd_ == -1) {

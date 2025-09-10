@@ -41,7 +41,7 @@
 
   y = rnorm(matrix_dim)
 
-  namespace = "my_namespace"
+  namespace = "ns_lapply"
   res = memshare::memLapply(l, function(el, y) {
     el %*% y
   }, NAMESPACE=namespace, VARS=list(y=y), MAX.CORES = 1)

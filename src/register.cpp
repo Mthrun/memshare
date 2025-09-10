@@ -18,7 +18,7 @@ void registerVariables(std::string name_space, List vars) {
         SEXP obj = vars[i];
 
         // register a page for every variable in the list.
-        registerPage(name_space + "." + varname, name_space + ".metadata." + varname, obj);
+        registerPage(name_space + "." + varname, name_space + ".md." + varname, obj);
     }
 }
 void releaseVariables(std::string name_space, CharacterVector vars) {

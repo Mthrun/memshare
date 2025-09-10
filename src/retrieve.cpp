@@ -21,7 +21,7 @@ List retrieveViews(std::string name_space, CharacterVector vars) {
         std::string varname = Rcpp::as<std::string>(vars[i]);
 
         // open a viewership page to the variable
-        auto view = viewPage(name_space + "." + varname, name_space + ".metadata." + varname);
+        auto view = viewPage(name_space + "." + varname, name_space + ".md." + varname);
         metadata::type data_type = view->metaPtr()->data_type;
 
         // wrap the page into an ALTREP
@@ -46,7 +46,7 @@ List retrieveMetadata(std::string name_space, std::string varname) {
     name_space = "Local\\" + name_space;   
 #endif
     // retrieve a viewership page of the variable
-    auto view = viewPage(name_space + "." + varname, name_space + ".metadata." + varname);
+    auto view = viewPage(name_space + "." + varname, name_space + ".md." + varname);
     metadata::type data_type = view->metaPtr()->data_type;
 
     // wrap the metadata of the viewership page into a list.
