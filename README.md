@@ -97,6 +97,58 @@ Each element el of ListV is multiplied by y in parallel. The list resides once i
 
 When the package is detached, all handles and associated shared memory pages are released, unless another R process still holds references.
 
+
+## Shared-memory lifecycle
+
+`memshare` exposes explicit lifecycle functions so you can control when data is
+placed in shared memory and when it is freed.
+
+### `registerVariables(namespace, variableList)`
+Allocate shared memory and copy R objects (matrices or vectors, or lists for `memLapply`) into it.
+- `namespace`: character(1). Identifier of the shared memory context shared across processes.
+- `variableList`: a **named** list of objects to register. Names become the keys under which
+  you can later retrieve views.
+
+**Example**
+
+```r
+library(memshare)
+
+ns <- "my_namespace"
+X  <- matrix(rnorm(1e4), 100, 100)
+y  <- rnorm(100)
+
+registerVariables(ns, list(X = X, y = y))
+# Now X and y live once in shared memory and can be accessed from other R processes
+```
+
+### `releaseVariables(namespace, variableNames)`
+Delete variables from the shared memory space. Shared regions are only removed when **no active views remain**.
+- `namespace`: character(1) used above.
+- `variableNames`: character vector of variable names to free.
+
+**Example**
+
+```r
+# After all workers have released their views:
+releaseVariables(ns, c("X", "y"))
+```
+
+### Working with views: `retrieveViews()` and `releaseViews()`
+To avoid duplication, workers attach to shared memory by **views**:
+- `retrieveViews(namespace, c("X","y"))` returns ALTREP-backed objects that behave like ordinary R matrices/vectors.
+- Always call `releaseViews(namespace, ...)` when finished so that the backing memory can be reclaimed.
+
+**Example (worker-side)**
+
+```r
+vlist <- retrieveViews(ns, c("X","y"))
+# use vlist$X and vlist$y
+releaseViews(ns, c("X","y"))
+```
+
+> Tip: `memApply()` and `memLapply()` manage views for you automatically, but the low-level API above is useful for custom workflows.
+
 ### Manual
 
 The full manual for users or developers is available here:

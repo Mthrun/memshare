@@ -1,0 +1,162 @@
+---
+title: "memshare: Fast Shared-Memory Parallelism in R"
+author: "Michael C. Thrun and Julian Märte"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  %\VignetteIndexEntry{memshare: Fast Shared-Memory Parallelism in R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Why memshare?
+
+Most parallel R workflows duplicate large objects into every worker process. That wastes RAM and time.
+**memshare** stores big objects **once** in shared memory and lets workers attach to them as ordinary
+R vectors/matrices via **ALTREP** views. You get:
+
+- minimal memory use (one in-RAM copy),
+- no serialization of big objects to workers,
+- drop‑in `apply`/`lapply`-style APIs that manage sharing for you.
+
+This vignette is a quick, practical guide, for technical details we refer to [Thrun and Märte, 2025]
+
+---
+
+## Install
+
+```r
+install.packages("memshare")         # CRAN
+# remotes::install_github("yourname/memshare")  # dev
+```
+
+Requirements: R ≥ 4.0, C++17 toolchain.
+
+---
+
+## 5‑minute tour
+
+### 1) Column-wise work on a matrix (`memApply`)
+
+```r
+library(memshare)
+
+set.seed(1)
+n <- 10000; p <- 2000
+X <- matrix(rnorm(n * p), n, p)   # numeric/double matrix
+y <- rnorm(n)
+
+# Correlate each column with y, in parallel, without copying X to workers
+res <- memApply(
+  X = X, MARGIN = 2,
+  FUN = function(v, y) cor(v, y),
+  VARS = list(y = y)           # shared side data
+)
+str(res)
+```
+
+**What happened?**  
+`X` and `y` were placed in shared memory; workers received **views** (ALTREP) instead of copies.
+Each worker extracted the i-th column as `v`, ran `FUN(v, y)`, and returned a result. All views were released automatically at the end.
+
+### 2) List workloads (`memLapply`)
+
+```r
+list_length <- 1000
+d <- 200
+L <- lapply(1:list_length, function(i) matrix(rnorm(d * d), d, d))
+w <- rnorm(d)
+
+ans <- memLapply(L, function(el, w) el %*% w, VARS = list(w = w))
+length(ans); dim(ans[[1]])
+```
+
+### 3) Low-level control (register / retrieve / release)
+
+```r
+ns <- "demo"
+X  <- matrix(rnorm(1e6), 1000, 1000)
+registerVariables(ns, list(X = X))
+
+vw <- retrieveViews(ns, "X")
+mean(vw$X[ , 1])
+releaseViews(ns, "X")
+
+releaseVariables(ns, "X")
+```
+
+---
+
+## Concepts that matter
+
+- **Namespace**: a string key that identifies a shared-memory context (e.g., `"demo"`).  
+- **Pages**: the actual shared-memory buffers owned by a session.  
+- **Views**: ALTREP wrappers that let R treat shared-memory buffers like normal objects.
+
+Unload the package (or release views/variables) to clean up. Memory is freed once **no views remain**.
+
+---
+
+## Common patterns
+
+### Feature map over columns (fast and memory-light)
+
+```r
+score <- function(v, a, b) sum((v - a)^2) / (1 + b)  # any column-wise work
+ns <- "scores"
+a <- rnorm(n); b <- runif(1)
+
+out <- memApply(X = X, MARGIN = 2, FUN = score, VARS = list(a = a, b = b), NAMESPACE = ns)
+```
+
+### Multiple passes on the same data
+
+Reuse the same namespace to avoid re-registering large objects.
+
+```r
+ns <- "reuse"
+registerVariables(ns, list(X = X))
+pass1 <- memApply("X", 2, function(v) sd(v), NAMESPACE = ns)
+pass2 <- memApply("X", 2, function(v) mean(v), NAMESPACE = ns)
+releaseVariables(ns, "X")
+```
+
+---
+
+## Tips and best practices
+
+- `FUN`'s **first argument** must be the vector/list element (`v` for `memApply`, `el` for `memLapply`).  
+  Any extra shared variables in `VARS` must use **exactly the same names** in `FUN`’s signature.
+- Matrices/vectors must be basic numeric (double) without S3 class attributes (ALTREP expects raw storage).
+- If you provide your own cluster, you can still use `clusterExport` for *small copied* objects; big ones belong in `VARS`.
+- Free memory promptly: `releaseViews()` in workers (handled automatically by `memApply/memLapply`), and `releaseVariables()` in the master when done.
+- Detaching the package removes handles and clears shared variables unless another R process still holds a view.
+- Keep write access simple (read-mostly is safest). If multiple workers write to the *same* region, coordinate externally.
+
+---
+
+## Troubleshooting
+
+- **“Unknown input format for X/VARS”**: ensure `X` is a numeric matrix (double) or a character name of a registered object; `VARS` is either a named list (to register) or character vector of existing names.  
+- **Memory not freed**: check `viewList()` in workers; any remaining views prevent `releaseVariables()` from reclaiming memory.  
+- **Anonymous functions and namespaces**: if `NAMESPACE` is missing and `FUN` is an inline lambda, the default namespace is `"unnamed"`. Prefer explicit `NAMESPACE` in production.
+
+---
+
+## Essentials
+
+- `registerVariables(namespace, variableList)` — put objects into shared memory.  
+- `retrieveViews(namespace, variableNames)` — get ALTREP views (workers).  
+- `releaseViews(namespace, variableNames)` — release worker views.  
+- `releaseVariables(namespace, variableNames)` — free objects (master).  
+- `memApply(X, MARGIN, FUN, NAMESPACE = NULL, VARS = NULL, MAX.CORES = NULL)` — matrix apply with shared memory.  
+- `memLapply(X, FUN, NAMESPACE = NULL, VARS = NULL, MAX.CORES = NULL)` — list apply with shared memory.
+
+---
+
+## References <a name="references"/>
+
+[Thrun and Märte, 2025] Thrun, M.C., Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE, The R Journal, in revision, 2025.

@@ -8,14 +8,18 @@ void MemoryPage::alloc(const std::string& name, size_t byteSize) {
     is_view = false;
 #ifdef _WIN32
     // for windows create a file mapping and retrieve a handle to it.
-    hMapFile_ = CreateFileMappingA(
-        INVALID_HANDLE_VALUE,    // use paging file
-        NULL,                    // default security
-        PAGE_READWRITE,          // read/write access
-        0,                       // maximum object size (high-order DWORD)
-        static_cast<DWORD>(size_), // maximum object size (low-order DWORD)
-        name.c_str());           // name of mapping object
-
+//MCT correction in 1.0.3
+  ULONGLONG maxSize = static_cast<ULONGLONG>(size_);
+  DWORD maxSizeLow  = static_cast<DWORD>(maxSize & 0xFFFFFFFFull);
+  DWORD maxSizeHigh = static_cast<DWORD>((maxSize >> 32) & 0xFFFFFFFFull);
+  hMapFile_ = CreateFileMappingA(
+    INVALID_HANDLE_VALUE,    // use paging file
+    NULL,                    // default security
+    PAGE_READWRITE,          // read/write access
+    maxSizeHigh,             // maximum object size (high-order DWORD)
+    maxSizeLow,              // maximum object size (low-order DWORD)
+    name.c_str());           // name of mapping object
+  //end MCT correction in 1.0.3
     if (GetLastError() == ERROR_ALREADY_EXISTS) {
         throw std::runtime_error("Variable was already registered!");
     }

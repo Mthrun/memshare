@@ -15,6 +15,9 @@
 
 \details{
 The string of each element of the output list has the format <namespace name>.<variable name>. Default is lokal environment.
+
+Useful for \emph{leak diagnostics}: if \code{\link{releaseVariables}} did not free memory,
+check that \code{viewList()} is empty across all sessions.
 }
 \author{ Julian Maerte }
 

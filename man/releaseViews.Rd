@@ -16,7 +16,11 @@
 \value{
   No return value, called for deallocation of views.
 }
-
+\details{
+This is the only way to drop handles created by \code{\link{retrieveViews}}. Wrappers
+such as \code{\link{memApply}} / \code{\link{memLapply}} call this function internaly. Not releasing views effectively
+leaks the backing pages for the lifetime of the process.
+}
 \author{ Julian Maerte }
 
 \seealso{ \code{\link{retrieveViews}}, \code{\link{registerVariables}} }

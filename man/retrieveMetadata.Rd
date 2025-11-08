@@ -17,7 +17,10 @@
 \value{
  A [1:m] named list mapping the variable names to their retrieved metadata. Each list element contains a list of two elements called "\code{type}" and length "\code{n}"
 }
-
+\details{
+In some contexts, querying metadata may create an implicit view. If so, you must call
+\code{\link{releaseViews}} for that variable afterwards. See examples.
+}
 \author{ Julian Maerte }
 
 \seealso{ \code{\link{releaseVariables}}, \code{\link{releaseViews}}, \code{\link{registerVariables}} }

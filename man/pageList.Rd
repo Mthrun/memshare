@@ -17,9 +17,14 @@ An [1:m] list of characters of the registered p namespaces, each of them having 
 \details{
 The string of each element of the output list has the format environment, backslash, backslash <namespace name>.<variable name>. Default is lokal environment.
 }
+\note{
+Use alongside \code{\link{viewList}} to ensure all views and pages are cleared before shutdown.
+}
+
 \author{ Julian Maerte }
 
-\seealso{ \code{\link{registerVariables}}, \code{\link{releaseVariables}} }
+\seealso{\code{\link{viewList}}, \code{\link{registerVariables}}, \code{\link{releaseVariables}}}
+
 \examples{
   pageList()
   \dontrun{

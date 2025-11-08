@@ -14,6 +14,40 @@
   Since the memory is shared only the names have to be copied to each worker thread in \code{CLUSTER} (a \code{\link[parallel]{makeCluster}} multithreading cluster) resulting in sharing of arbitrarily large matrices (as long as the fit in RAM once) along a \pkg{parallel} cluster while only copying a couple of bytes per cluster.
  It is recommended not to change the values of the list element \code{el} inside \code{FUN}, however this will only lead to some copying of the element whenever it is worked upon; the shared memory thus will not be corrupted even if you write to an element. Also the copying only ever happens for one element at a time leading to much lower memory consumption than parallel even in this case.
 
+\strong{Thread safety}  
+
+Each element \code{el} provided to \code{FUN} is typically an ALTREP view 
+of a shared-memory object rather than an ordinary R copy.  
+This means that workers can access the same physical memory region concurrently.  
+
+\emph{Read-only operations are fully safe and recommended.} Examples include 
+computations such as matrix multiplication, summary statistics, or transformations 
+that return new results without altering \code{el} in place.  
+Because the data are shared, these operations require almost no additional memory 
+and avoid costly data duplication.  
+
+If your function modifies an element directly (e.g., \code{el[1,1] <- 0}), you may 
+be writing to a shared memory buffer that other workers can also access.  
+This can cause inconsistent results or data corruption if multiple workers write 
+simultaneously. Even when no overlap exists, such in-place modification can trigger 
+a copy of the element inside that worker, reducing memory efficiency.  
+
+For safety, make an explicit local copy before any in-place changes:
+\preformatted{
+f <- function(el, y) {
+  el <- as.matrix(el)  # force a private copy
+  el <- el * y         # modify locally
+  colSums(el)
+}
+}
+This ensures that only the current worker modifies its own private memory.  
+
+Finally, note that R’s internal C API is single-threaded.  
+If \code{FUN} calls compiled code (e.g., via Rcpp, OpenMP, or TBB) that 
+spawns multiple threads, those threads must not interact directly with R 
+(e.g., by creating R objects, printing, or evaluating expressions).  
+All such interactions must occur in the main R thread of each worker process.
+
 }
 \arguments{
   \item{X}{ Either a 1:n list object or a the name of an already registered list object in \code{NAMESPACE}. }

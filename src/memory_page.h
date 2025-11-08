@@ -1,16 +1,22 @@
 #pragma once
 
-#include <cstddef>
+#include <cstddef> // size_t
 #include <stdexcept>
 #include <string>
+#include <cstdint>   // uint64_t, MCT correction in 1.0.3
 
 #ifdef _WIN32
-  #include <windows.h>
+//MCT correction in 1.0.3
+// Avoid macro collisions with std::min/std::max
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
 #else
-  #include <sys/mman.h>
-  #include <sys/stat.h> /* For mode constants */
-  #include <fcntl.h>    /* For O_* constants */
-  #include <unistd.h>
+#include <sys/mman.h>
+#include <sys/stat.h> /* For mode constants */
+#include <fcntl.h>    /* For O_* constants */
+#include <unistd.h>
 #endif
 
 /**
@@ -59,12 +65,12 @@ public:
 
 private:
   std::string name_;
-  size_t size_;
+  size_t size_ = 0; // size in bytes, MCT correction
   void* ptr_ = nullptr;
   bool is_view = false;
 
 #ifdef _WIN32
-  HANDLE hMapFile_ = NULL;
+  HANDLE hMapFile_ = nullptr; //MCT correction in 1.0.3
 #else
   int fd_ = -1;
 #endif

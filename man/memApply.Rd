@@ -27,8 +27,42 @@
 
  The numerical matrix X and the Vars havee to be objects of base type '\code{double}'.
 
-
   It is recommended not to change the values of \code{v} inside \code{FUN}, however this will only lead to some copying of the column whenever it is worked upon; the shared memory thus will not be corrupted even if you write to column or row. Also the copying only ever happens for one column/row at a time leading to much lower memory consumption than parallel even in this case.
+  
+ \strong{Thread safety}
+ 
+The vector \code{v} passed to \code{FUN} is typically an ALTREP view that 
+\emph{directly references shared memory} rather than a private copy.  
+This means that multiple worker processes may be reading the same memory region 
+simultaneously.  
+
+\emph{Read-only operations are fully safe and recommended.} Examples include 
+statistical summaries (\code{mean(v)}, \code{cor(v, y)}), vectorized arithmetic, 
+and model-fitting that does not modify \code{v}.  
+
+If you attempt to modify elements of \code{v} directly (for example, 
+\code{v[1] <- 0}), you are writing into a shared buffer.  
+Concurrent modification by multiple workers can lead to race conditions 
+or data corruption. Even if no other process is writing, in-place assignment 
+may still trigger an internal copy of that row or column, slightly increasing 
+memory usage.  
+
+For safety and clarity, always \emph{copy} \code{v} locally if you need to modify it:
+\preformatted{
+f <- function(v, y) {
+  v <- as.vector(v)  # make a private, normal R copy
+  v <- scale(v)
+  cor(v, y)
+}
+}
+This ensures isolation between workers and prevents unintended data sharing.  
+
+Finally, remember that R's internal C API is not thread-safe.  
+If your function \code{FUN} uses multi-threaded C++ code (e.g., via OpenMP or TBB), 
+those internal threads must \emph{not} make calls into R (such as creating 
+objects, evaluating expressions, or printing).  
+All R interactions must occur in the main thread of each worker process.
+
 }
 
 \author{ Julian Maerte }

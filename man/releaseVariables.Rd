@@ -1,43 +1,42 @@
 \name{releaseVariables}
 \alias{releaseVariables}
-\title{ Function to delete variables from a shared memory space. }
+\title{Release variables from a shared memory namespace}
 \description{
-  Given a namespace identifier (identifies the shared memory space to register to), this function releases given variables from the shared memory space.
+Delete variables from the shared memory space. Actual release occurs only when no active views remain.
 }
 \usage{
-  releaseVariables(namespace, variableNames)
+releaseVariables(namespace, variableNames)
 }
 \arguments{
-    \item{namespace}{ string of the identifier of the shared memory context. }
-  \item{variableNames}{ A character vector of variable names to delete. }
+  \item{namespace}{Character(1) used at registration time.}
+  \item{variableNames}{Character vector of names to free.}
 }
 \value{
-  No return value, called for deallocation of memory pages.
+Invisibly, \code{TRUE} on success.
+}
+\details{
+Registered buffers remain allocated until \emph{all} views are released.
+If any worker still holds a view, \code{\link{releaseVariables}} cannot reclaim memory.
+
+\strong{Thread safety}
+
+Registered buffers may be read concurrently by many processes.
+Concurrent writes must be synchronized externally (e.g., interprocess mutex). Do not call
+the R API from secondary threads.
+
+Wrappers such as \code{\link{memApply}} / \code{\link{memLapply}} call this function on.exit.
 }
 
-\author{ Julian Maerte }
-
-\seealso{ \code{\link{releaseVariables}}, \code{\link{retrieveViews}} }
+\note{
+This call succeeds in removing ownership, but underlying memory is only unmapped
+when every process has called \code{\link{releaseViews}} for those variables.
+Use \code{\link{viewList}} and \code{\link{pageList}} for diagnostics.
+}
+\seealso{\code{\link{registerVariables}}, \code{\link{releaseViews}}}
 \examples{
-  \dontrun{
-  # MASTER SESSION:
-  # allocate data, call calculation, free data
-  }
-  n = 1000
-  m = 100
-
-  NumMatrix = matrix(rnorm(n * m), n, m) # target matrix
-  yvec = rnorm(n) 
-  \dontrun{
-  # yvec os some other constant vector 
-  # in which the function should not run
-  }
-  namespace = "ns_release"
-  memshare::registerVariables(namespace, list(NumMatrix=NumMatrix, yvec=yvec))
-  \dontrun{
-  # Perform your shared calculations here
-  }
-  memshare::releaseVariables(namespace, c("NumMatrix", "yvec"))
+ns <- "example"
+X <- matrix(rnorm(100), 10, 10)
+registerVariables(ns, list(X = X))
+# later ...
+releaseVariables(ns, "X")
 }
-\concept{ shared memory }
-\keyword{ multithreading }
