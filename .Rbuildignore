@@ -1,6 +1,3 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^inst$
-^inst/doc$
-^doc$
 ^\.github$
