@@ -1,0 +1,15 @@
+citHeader("To cite memshare in publications, please use:")
+
+citEntry(
+  entry = "Article",
+  title = "Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE",
+  author = personList(
+    person("Michael C.", "Thrun"),
+    person("Julian", "Märte")
+  ),
+  journal = "The R Journal",
+  year = "2025",
+  note = "Accepted",
+  textVersion =
+    "Thrun, M. C., & Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE. The R Journal (accepted), 2025."
+)
