@@ -1,11 +1,17 @@
 ---
 title: "memshare: Fast Shared-Memory Parallelism in R"
 author: "Michael C. Thrun and Julian Märte"
-date: "`r Sys.Date()`"
-output:
-  rmarkdown::html_vignette:
-    toc: true
-    toc_depth: 2
+date: "`r format(Sys.time(), '%d %b %Y')`"
+output: 
+          html_document:
+            theme: united
+            highlight: tango 
+            toc: true
+            number_sections: true
+            doc_depth: 2
+            toc_float: true
+            fig.width: 8
+            fig.height: 8
 vignette: >
   %\VignetteIndexEntry{memshare: Fast Shared-Memory Parallelism in R}
   %\VignetteEngine{knitr::rmarkdown}

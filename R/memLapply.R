@@ -47,7 +47,16 @@ memLapply = function(X, FUN, NAMESPACE = NULL, CLUSTER = NULL, VARS=NULL, MAX.CO
         }
         listName = X
     } else if (is.list(X)) {
-        listName = deparse(substitute(X))
+        #listName = deparse(substitute(X))
+        #mt correction: returns the expression used in the call, not the “object’s variable name”.
+        #R has no obligation to pass a symbol — it can (and does) pass expressions.
+        s = substitute(X)
+        if (is.symbol(s)){
+          listName=as.character(s)
+        }else{
+          listName=paste0("iL", Sys.getpid(), "_", sample.int(1e3, 1))#2 chars plus 5chars plus 3 chars
+        } 
+        
         listList = list()
         listList[[listName]] = X
         registerVariables(NAMESPACE, listList)

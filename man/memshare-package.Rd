@@ -66,6 +66,21 @@ Detaching or unloading the \pkg{memshare} package automatically drops all handle
 but if another R session still has an open view, that memory remains in use until 
 it is released there as well. This design prevents dangling pointers and ensures 
 that shared data are not invalidated while still in use by another worker.
+
+\strong{OS notes}\cr
+\emph{Windows.} Uses Win32 file mappings (\code{CreateFileMappingA()}, \code{MapViewOfFile()}). Namespaces are automatically prefixed with \code{"Local\\\\"} to scope mappings per user session. Mapping sizes use 64-bit high/low DWORDs. Views are opened read-only by default (\code{FILE_MAP_READ}). Cleanup unmaps views (\code{UnmapViewOfFile()}) and then closes handles (\code{CloseHandle()}). Requires homogeneous architecture (e.g., all 64-bit R sessions). Antivirus/EDR tools may slow mappings.
+
+\emph{Linux.} Uses POSIX shared memory (\code{shm_open()} + \code{mmap()}). Owners create with \code{O_CREAT|O_EXCL|O_RDWR} and \code{PROT_READ|PROT_WRITE}; views attach with \code{O_RDONLY} and \code{PROT_READ}. Owners call \code{shm_unlink()} only after all views are released. Shared memory size may be limited by \code{/dev/shm} or system SHM limits (e.g., \code{shmmax}).
+
+\emph{macOS.} Also uses POSIX shared memory (\code{shm_open()} + \code{mmap()}) with the same owner/view flags as Linux.
+Unlike Linux, macOS implements POSIX shared memory via files in \file{/var/run/shm} or \file{/private/var/shm}, which may
+not exist by default and can require manual creation or permission adjustment. POSIX shm names must be short; a practical
+upper bound is about 32 characters including the leading slash. Exceeding this limit raises a clear error. Shared memory
+segments are visible only to processes of the same user unless permissions are relaxed. The maximum segment size could be smaller than on Linux. macOS does not automatically remove orphaned
+segments if a process crashes; these must be manually cleaned using \code{ipcs -m} / \code{ipcrm} or by restarting the
+system. If your R session or script crashes before releaseVariables() or releaseViews() runs, those shared memory segments may remain allocated on disk.
+
+
 }
 \author{
 \packageAuthor{memshare}

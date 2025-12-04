@@ -24,8 +24,6 @@ memApply = function(X, MARGIN, FUN, NAMESPACE = NULL, CLUSTER=NULL, VARS=NULL, M
     #   is enabled this way.
     #author: JM 05/2025
     #1.Editor: MT: 08/25: correction of casts, error catching improvment, warning improvement.
-    x=NULL
-    
     namespaceSetByUser = !is.null(NAMESPACE)
     if (!namespaceSetByUser) {
         NAMESPACE = deparse(substitute(FUN))
@@ -68,7 +66,7 @@ memApply = function(X, MARGIN, FUN, NAMESPACE = NULL, CLUSTER=NULL, VARS=NULL, M
           
         }else if(!is.character(X) && !is.matrix(X)){ #maybe a dataframe
           warning("memApply: X was not neither matrix nor character vector, trying to apply as.matrix().")
-          X=as.matrix(x)
+          X=as.matrix(X)
         }else{
           #do nothing an start next input checking
         }# end if check X as character
@@ -84,9 +82,16 @@ memApply = function(X, MARGIN, FUN, NAMESPACE = NULL, CLUSTER=NULL, VARS=NULL, M
           if (! (is.double(X) && is.null(attr(X, "class")))) {
             #mt correction:            
             warning("memApply: X was not double, resetting storage mode to double.")
-            storage.mode(M)="double"
+            storage.mode(X)="double"
           }
-          matName = deparse(substitute(X))
+          #mt correction: returns the expression used in the call, not the “object’s variable name”.
+          #R has no obligation to pass a symbol — it can (and does) pass expressions.
+          s = substitute(X)
+          if (is.symbol(s)){
+            matName=as.character(s)
+          }else{
+            matName=paste0("iX", Sys.getpid(), "_", sample.int(1e3, 1))#2 chars plus 5chars plus 3 chars
+          } 
           matList = list()
           matList[[matName]] = X
           registerVariables(NAMESPACE, matList)
