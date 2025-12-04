@@ -3,3 +3,4 @@
 ^inst$
 ^inst/doc$
 ^doc$
+^\.github$

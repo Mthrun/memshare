@@ -1,6 +1,7 @@
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/memshare)](https://cran.r-project.org/package=memshare)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/grand-total/memshare?color=blue)](https://r-pkg.org/pkg/memshare)
 [![CRAN RStudio mirror downloads](https://cranlogs.r-pkg.org/badges/last-month/memshare?color=green)](https://r-pkg.org/pkg/memshare)
+[![R-CMD-check](https://github.com/Mthrun/memshare/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/Mthrun/memshare/actions/workflows/R-CMD-check.yaml)
 
 # memshare: Shared memory multithreading in R via C++17, with zero-copy access through ALTREP data structures.
 
