@@ -5,6 +5,7 @@
 #include "shared_memory.h"
 #include "metadata.h"
 
+
 void registerVariables(std::string name_space, List vars) {
 #ifdef _WIN32
     // For windows we prepend the namespace identifier by "Local\\" because otherwise the shared memory is shared system-wide (instead of user-wide) which needs admin privileges

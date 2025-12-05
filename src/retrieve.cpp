@@ -5,6 +5,7 @@
 #include "altrep.h"
 #include "shared_memory.h"
 #include "metadata.h"
+#include <R_ext/Error.h>
 
 List retrieveViews(std::string name_space, CharacterVector vars) {
 #ifdef _WIN32
@@ -32,7 +33,7 @@ List retrieveViews(std::string name_space, CharacterVector vars) {
         } else if (data_type == metadata::type::LIST) {
             result[i] = make_altrep_list(view->metaPtr(), view->memPtr());
         } else {
-            stop("Unknown Datatype!");
+            Rf_error("Unknown Datatype!");
         }
     }
 
@@ -67,7 +68,10 @@ List retrieveMetadata(std::string name_space, std::string varname) {
             Named("n") = view->metaPtr()->list_data.n
         );
     } else {
-        stop("Unknown type '%s' for variable '%s'", data_type, varname);
+
+      Rf_error("Unknown type '%s' for variable '%s'",
+               type_to_string(data_type),
+               varname.c_str());
     }
 }
 void releaseViews(std::string name_space, CharacterVector vars) {

@@ -1,6 +1,5 @@
 #include "altrep.h"
 #include <iostream>
-#include <Rcpp.h>
 
 extern "C" {
     SEXP make_altrep_matrix(double* ptr, size_t nrow, size_t ncol) {
@@ -161,9 +160,9 @@ extern "C" {
         } else if (data_type == metadata::type::VECTOR) {
             return make_altrep_vector(start + sizes[i], m[i+1].vector_data.n);
         } else if (data_type == metadata::type::LIST) {
-            stop("Nested Lists are not supported yet!");
+            Rf_error("Nested Lists are not supported yet!");
         } else {
-            stop("Unknown datatype!");
+            Rf_error("Unknown datatype!");
         }
     }
 

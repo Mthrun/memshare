@@ -32,7 +32,7 @@ std::vector<metadata> make_list_metadata(List l) {
             NumericVector vec(obj);
             res[i+1] = make_vector_metadata(vec.size());
         } else {
-            stop("Unknown element type of list!");
+            Rf_error("Unknown element type of list!");
         }
     }
     return res;

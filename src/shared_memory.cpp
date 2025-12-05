@@ -1,5 +1,6 @@
 #include "shared_memory.h"
 #include <iostream>
+#include <R_ext/Error.h>
 
 std::map<std::string, std::shared_ptr<SharedData>> views;
 std::map<std::string, std::unique_ptr<SharedData>> pages;
@@ -44,9 +45,9 @@ void SharedData::alloc(const std::string& shared_mem_name, const std::string& sh
                 } else if (m[i].data_type == metadata::type::VECTOR) {
                     total_elements += m[i].vector_data.n;
                 } else if (m[i].data_type == metadata::type::LIST) {
-                    stop("Nested Lists are not supported yet!");
+                    Rf_error("Nested Lists are not supported yet!");
                 } else {
-                    stop("Unknown element type in List!");
+                    Rf_error("Unknown element type in List!");
                 }
             }
 
@@ -79,7 +80,7 @@ void SharedData::alloc(const std::string& shared_mem_name, const std::string& sh
                 }
             }
         } else {
-            stop("Unsupported shared memory type.");
+            Rf_error("Unsupported shared memory type.");
         }
     } catch (std::exception &e) {
         throw std::runtime_error("Allocation error: " + std::string(e.what()));
@@ -114,10 +115,12 @@ void SharedData::view(const std::string& shared_mem_name, const std::string& sha
             mem = std::make_unique<MemoryPage>();
             mem->view(shared_mem_name, m[0].list_data.n * sizeof(unsigned long long) + m[0].list_data.numDoubles * sizeof(double));
         } else {
-            stop("Unknown type '%s' for variable '%s'", data_type, shared_mem_name);
+          Rf_error("Unknown type '%s' for variable '%s'",
+                   type_to_string(data_type),
+                   shared_mem_name.c_str());
         }
     } catch (std::runtime_error& e) {
-        stop("The requested variable was not registered!");
+        Rf_error("The requested variable was not registered!");
     }
 }
 

@@ -133,3 +133,14 @@ std::vector<std::string> getSharedViews();
  * @result  A vector containing the memory page names
  */
 std::vector<std::string> getSharedPages();
+
+
+static const char* type_to_string(metadata::type t) {
+  switch (t) {
+  case metadata::type::MATRIX: return "MATRIX";
+  case metadata::type::VECTOR: return "VECTOR";
+  case metadata::type::LIST:   return "LIST";
+    // add more cases as needed
+  default:                     return "UNKNOWN";
+  }
+}
