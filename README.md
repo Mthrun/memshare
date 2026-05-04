@@ -157,7 +157,7 @@ The full manual for users or developers is available here:
 
 ## References <a name="references"/>
 
-[Thrun and Märte, 2025] Thrun, M.C., Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE, 2025.
+[Thrun/Märte, 2026]  Thrun, M. C., & Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE, R Journal, Vol. 17(4), pp. 306 - 322, doi 10.32614/RJ-2025-043, 2026.
 
 [Thrun et al., 2020] Thrun, M.C., Gehlert, T., & Ultsch, A.: Analyzing the Fine Structure of Distributions, PLOS ONE, 15(10), e0238835, 2020.
 

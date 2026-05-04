@@ -82,3 +82,6 @@ All R interactions must occur in the main thread of each worker process.
 }
 \keyword{ memApply }
 \keyword{ multithreading }
+\references{
+[Thrun and Märte, 2026] Thrun, M.C., Märte, J.: Memshare: Memory Sharing for Multicore Computation in R with an Application to Feature Selection by Mutual Information using PDE, The R Journal, Vol. 17(4), pp. 306 - 322, doi 10.32614/RJ-2025-043, 2026.
+}
