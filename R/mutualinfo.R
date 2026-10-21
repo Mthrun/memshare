@@ -57,7 +57,29 @@ mutualinfo = function(x, y, isXDiscrete = FALSE, isYDiscrete = FALSE,eps=.Machin
 		warning("Please install package mpmi.")
 		return(NULL)
 	}
-    return(mpmi::cmi(cbind(x,y))$mi[1,2])
+    raw <- if (!isXDiscrete && !isYDiscrete) {
+      
+      # kontinuierlich / kontinuierlich
+      mpmi::cmi.pw(x, y)$mi
+      
+    } else if (isXDiscrete && isYDiscrete) {
+      
+      # diskret / diskret
+      mpmi::dmi.pw(factor(x), factor(y))$mi
+      
+    } else if (!isXDiscrete) {
+      
+      # x kontinuierlich, y diskret
+      mpmi::mmi.pw(x, factor(y))$mi
+      
+    } else {
+      
+      # y kontinuierlich, x diskret
+      mpmi::mmi.pw(y, factor(x))$mi
+    }
+    
+    # mpmi liefert Nats; Umrechnung in die gewünschte Basis
+    return(as.numeric(raw)[1L])
   } else {
     if (!isXDiscrete && !isYDiscrete) {
       ParetoRadiusX=DataVisualizations::ParetoRadius_fast(x)
